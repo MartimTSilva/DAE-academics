@@ -1,0 +1,13 @@
+##### Students
+GET http://localhost:8080/academics/api/students
+Accept: application/json
+###
+POST http://localhost:8080/academics/api/students
+Content-Type: application/json
+{
+ "email": "johndoe@mail.com",
+ "name": "John Doe",
+ "username": "john",
+ "password": "jd",
+ "courseCode": 1
+}
