@@ -3,22 +3,22 @@ package pt.ipleiria.estg.dei.ei.dae.academics.dto;
 import java.io.Serializable;
 
 public class CourseDTO implements Serializable {
-    private int code;
+    private long code;
     private String name;
 
     public CourseDTO() {
     }
 
-    public CourseDTO(int code, String name) {
+    public CourseDTO(long code, String name) {
         this.code = code;
         this.name = name;
     }
 
-    public int getCode() {
+    public long getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(long code) {
         this.code = code;
     }
 

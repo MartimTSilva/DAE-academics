@@ -1,7 +1,5 @@
 package pt.ipleiria.estg.dei.ei.dae.academics.ejbs;
 
-import pt.ipleiria.estg.dei.ei.dae.academics.entities.Course;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -15,11 +13,48 @@ public class ConfigBean {
     @EJB
     CourseBean courseBean;
 
+    @EJB
+    SubjectBean subjectBean;
+
+    @EJB
+    AdministratorBean administratorBean;
+
+    @EJB
+    TeacherBean teacherBean;
+
     @PostConstruct
     public void populateDB() {
-        System.out.println("Hello Java EE!");
-        Course ei = new Course(1, "Engenharia Informática");
-        courseBean.create(ei.getCode(), ei.getName());
-        studentBean.create("martimtsilva", "123", "Martim", "martimtsilva@hotmail.com", ei.getCode());
+        courseBean.create(1, "Engenharia Informática");
+
+        studentBean.create("martimtsilva", "123", "Martim", "martimtsilva@hotmail.com", 1);
+
+        subjectBean.create(1, "Desenvolvimento de Aplicações Empresariais", courseBean.findCourse(1), 2022, 2023);
+        subjectBean.create(2, "Sistemas de Apoio à Decisão", courseBean.findCourse(1), 2022, 2023);
+        subjectBean.create(3, "Tópicos Avançados de Engenharia de Software", courseBean.findCourse(1), 2022, 2023);
+        subjectBean.create(4, "Desenvolvimento de Aplicações Distribuídas", courseBean.findCourse(1), 2022, 2023);
+
+        studentBean.findStudent("martimtsilva").addSubject(subjectBean.findSubject(1));
+        studentBean.findStudent("martimtsilva").addSubject(subjectBean.findSubject(2));
+        studentBean.findStudent("martimtsilva").addSubject(subjectBean.findSubject(3));
+        studentBean.findStudent("martimtsilva").addSubject(subjectBean.findSubject(4));
+
+        subjectBean.findSubject(1).addStudent(studentBean.findStudent("martimtsilva"));
+        subjectBean.findSubject(2).addStudent(studentBean.findStudent("martimtsilva"));
+        subjectBean.findSubject(3).addStudent(studentBean.findStudent("martimtsilva"));
+        subjectBean.findSubject(4).addStudent(studentBean.findStudent("martimtsilva"));
+
+        courseBean.findCourse(1).addStudent(studentBean.findStudent("martimtsilva"));
+        courseBean.findCourse(1).addSubject(subjectBean.findSubject(1));
+        courseBean.findCourse(1).addSubject(subjectBean.findSubject(2));
+        courseBean.findCourse(1).addSubject(subjectBean.findSubject(3));
+        courseBean.findCourse(1).addSubject(subjectBean.findSubject(4));
+
+        administratorBean.create("admin", "admin123", "Administrador", "admin@root.com");
+
+        teacherBean.create("professor", "prof123", "Professor Professorson", "prof@ipleiria.pt", 5);
+        teacherBean.findTeacher("professor").addSubject(subjectBean.findSubject(1));
+        teacherBean.findTeacher("professor").addSubject(subjectBean.findSubject(3));
+        subjectBean.findSubject(1).addTeacher(teacherBean.findTeacher("professor"));
+        subjectBean.findSubject(3).addTeacher(teacherBean.findTeacher("professor"));
     }
 }

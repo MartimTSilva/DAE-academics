@@ -38,7 +38,7 @@ public class CourseService {
                 courseDTO.getName()
         );
 
-        Course newCourse = courseBean.find(courseDTO.getCode());
+        Course newCourse = courseBean.findCourse(courseDTO.getCode());
         if (newCourse == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
         return Response.status(Response.Status.CREATED).entity(toDTO(newCourse)).build();

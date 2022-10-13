@@ -7,14 +7,14 @@ public class StudentDTO implements Serializable {
     private String username;
     private String password, name, email;
 
-    private int courseCode;
+    private long courseCode;
 
     private String courseName;
 
     public StudentDTO() {
     }
 
-    public StudentDTO(String username, String password, String name, String email, int courseCode, String courseName) {
+    public StudentDTO(String username, String password, String name, String email, long courseCode, String courseName) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -55,11 +55,11 @@ public class StudentDTO implements Serializable {
         this.email = email;
     }
 
-    public int getCourseCode() {
+    public long getCourseCode() {
         return courseCode;
     }
 
-    public void setCourseCode(int courseCode) {
+    public void setCourseCode(long courseCode) {
         this.courseCode = courseCode;
     }
 

@@ -11,3 +11,6 @@ Content-Type: application/json
  "password": "jd",
  "courseCode": 1
 }
+###
+GET http://localhost:8080/academics/api/students/martimtsilva/subjects
+Accept: application/json
