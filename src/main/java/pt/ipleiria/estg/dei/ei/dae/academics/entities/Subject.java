@@ -1,6 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.academics.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +13,8 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllSubjects",
-                query = "SELECT s FROM Subject s ORDER BY s.name" // JPQL
+                query = "SELECT s FROM Subject s ORDER BY s.course.name, s.scholarYear DESC, s.courseYear, s.name"
         )
-        //TODO: EX 7
 })
 
 @Entity
@@ -22,6 +22,7 @@ public class Subject implements Serializable {
     @Id
     private long code;
 
+    @NotNull
     private String name;
 
     @ManyToOne
@@ -36,15 +37,13 @@ public class Subject implements Serializable {
     @ManyToMany
     @JoinTable(name = "subjects_students",
             joinColumns = @JoinColumn(name = "subject_code", referencedColumnName = "code"),
-            inverseJoinColumns = @JoinColumn(name = "student_username", referencedColumnName =
-                    "username"))
+            inverseJoinColumns = @JoinColumn(name = "student_username", referencedColumnName = "username"))
     private List<Student> students;
 
     @ManyToMany
     @JoinTable(name = "subjects_teachers",
             joinColumns = @JoinColumn(name = "subject_code", referencedColumnName = "code"),
-            inverseJoinColumns = @JoinColumn(name = "teacher_username", referencedColumnName =
-                    "username"))
+            inverseJoinColumns = @JoinColumn(name = "teacher_username", referencedColumnName = "username"))
     private List<Teacher> teachers;
 
     public Subject() {

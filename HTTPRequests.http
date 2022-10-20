@@ -14,3 +14,15 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/academics/api/students/martimtsilva/subjects
 Accept: application/json
+
+###
+POST http://localhost:8080/academics/api/subjects/
+Content-Type: application/json
+
+{
+  "code": 555,
+  "courseyear": 2030,
+  "name": "Teste",
+  "scholaryear": 2029,
+  "courseCode": 1
+}

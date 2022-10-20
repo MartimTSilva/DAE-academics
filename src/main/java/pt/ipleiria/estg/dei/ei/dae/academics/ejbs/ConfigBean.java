@@ -28,19 +28,15 @@ public class ConfigBean {
 
         studentBean.create("martimtsilva", "123", "Martim", "martimtsilva@hotmail.com", 1);
 
-        subjectBean.create(1, "Desenvolvimento de Aplicações Empresariais", courseBean.findCourse(1), 2022, 2023);
-        subjectBean.create(2, "Sistemas de Apoio à Decisão", courseBean.findCourse(1), 2022, 2023);
-        subjectBean.create(3, "Tópicos Avançados de Engenharia de Software", courseBean.findCourse(1), 2022, 2023);
-        subjectBean.create(4, "Desenvolvimento de Aplicações Distribuídas", courseBean.findCourse(1), 2022, 2023);
+        subjectBean.create(1, "Desenvolvimento de Aplicações Empresariais", 2022, 2023, 1);
+        subjectBean.create(2, "Sistemas de Apoio à Decisão", 2022, 2023, 1);
+        subjectBean.create(3, "Tópicos Avançados de Engenharia de Software", 2022, 2023, 1);
+        subjectBean.create(4, "Desenvolvimento de Aplicações Distribuídas", 2022, 2023, 1);
 
         studentBean.findStudent("martimtsilva").addSubject(subjectBean.findSubject(1));
-        studentBean.findStudent("martimtsilva").addSubject(subjectBean.findSubject(2));
-        studentBean.findStudent("martimtsilva").addSubject(subjectBean.findSubject(3));
         studentBean.findStudent("martimtsilva").addSubject(subjectBean.findSubject(4));
 
         subjectBean.findSubject(1).addStudent(studentBean.findStudent("martimtsilva"));
-        subjectBean.findSubject(2).addStudent(studentBean.findStudent("martimtsilva"));
-        subjectBean.findSubject(3).addStudent(studentBean.findStudent("martimtsilva"));
         subjectBean.findSubject(4).addStudent(studentBean.findStudent("martimtsilva"));
 
         courseBean.findCourse(1).addStudent(studentBean.findStudent("martimtsilva"));

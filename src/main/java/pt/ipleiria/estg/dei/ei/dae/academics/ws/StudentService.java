@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.academics.ws;
 import pt.ipleiria.estg.dei.ei.dae.academics.dto.StudentDTO;
 import pt.ipleiria.estg.dei.ei.dae.academics.dto.SubjectDTO;
 import pt.ipleiria.estg.dei.ei.dae.academics.ejbs.StudentBean;
+import pt.ipleiria.estg.dei.ei.dae.academics.ejbs.SubjectBean;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Student;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Subject;
 
@@ -13,6 +14,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static pt.ipleiria.estg.dei.ei.dae.academics.Codes.*;
+
 @Path("students") // relative url web path for this service
 @Produces({MediaType.APPLICATION_JSON}) // injects header “Content-Type: application/json”
 @Consumes({MediaType.APPLICATION_JSON}) // injects header “Accept: application/json”
@@ -20,8 +23,10 @@ public class StudentService {
     @EJB
     private StudentBean studentBean;
 
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
-    //@Path("/all") // means: the relative url path is “/api/students/all”
+    @EJB
+    private SubjectBean subjectBean;
+
+    @GET
     public List<StudentDTO> getAllStudentsWS() {
         return studentsToDTOs(studentBean.getAllStudents());
     }
@@ -86,11 +91,53 @@ public class StudentService {
             List<SubjectDTO> dtos = subjectsToDTOs(student.getSubjects());
             return Response.ok(dtos).build();
         }
+
         return Response.status(Response.Status.NOT_FOUND)
                 .entity("ERROR_FINDING_STUDENT")
                 .build();
     }
 
+    @POST
+    @Path("{username}/enroll-subject/{code}")
+    public Response addStudentSubject(@PathParam("username") String username, @PathParam("code") long code) {
+        int res = studentBean.enrollStudentInSubject(username, code);
+
+        switch (res) {
+            case OK:
+                return Response.ok().build();
+            case USER_NOT_FOUND:
+                return Response.status(Response.Status.CONFLICT).entity("User not found.").build();
+            case SUBJECT_NOT_FOUND:
+                return Response.status(Response.Status.CONFLICT).entity("Subject not found.").build();
+            case SUBJECT_COURSE_NOT_MATCH:
+                return Response.status(Response.Status.CONFLICT).entity("Subject does not belong to user course.").build();
+            case USER_ALREADY_ENROLLED:
+                return Response.status(Response.Status.CONFLICT).entity("User already enrolled.").build();
+            default:
+                return Response.serverError().build();
+        }
+    }
+
+    @DELETE
+    @Path("{username}/unroll-subject/{code}")
+    public Response removeStudentSubject(@PathParam("username") String username, @PathParam("code") long code) {
+        int res = studentBean.unrollStudentInSubject(username, code);
+
+        switch (res) {
+            case OK:
+                return Response.ok().build();
+            case USER_NOT_FOUND:
+                return Response.status(Response.Status.CONFLICT).entity("User not found.").build();
+            case SUBJECT_NOT_FOUND:
+                return Response.status(Response.Status.CONFLICT).entity("Subject not found.").build();
+            case SUBJECT_COURSE_NOT_MATCH:
+                return Response.status(Response.Status.CONFLICT).entity("Subject does not belong to user course.").build();
+            case USER_NOT_ENROLLED:
+                return Response.status(Response.Status.CONFLICT).entity("User not enrolled.").build();
+            default:
+                return Response.serverError().build();
+        }
+    }
 
     // converts an entire list of entities into a list of DTOs
     private List<StudentDTO> studentsToDTOs(List<Student> students) {
