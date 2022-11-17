@@ -18,7 +18,7 @@ import java.util.Objects;
 })
 
 @Entity
-public class Course implements Serializable {
+public class Course extends Versionable implements Serializable {
     @Id
     private long code;
 

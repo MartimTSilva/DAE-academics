@@ -1,13 +1,13 @@
 package pt.ipleiria.estg.dei.ei.dae.academics.ws;
 
-import pt.ipleiria.estg.dei.ei.dae.academics.dto.CourseDTO;
 import pt.ipleiria.estg.dei.ei.dae.academics.dto.StudentDTO;
 import pt.ipleiria.estg.dei.ei.dae.academics.dto.SubjectDTO;
+import pt.ipleiria.estg.dei.ei.dae.academics.dto.TeacherDTO;
 import pt.ipleiria.estg.dei.ei.dae.academics.ejbs.CourseBean;
 import pt.ipleiria.estg.dei.ei.dae.academics.ejbs.SubjectBean;
-import pt.ipleiria.estg.dei.ei.dae.academics.entities.Course;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Student;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Subject;
+import pt.ipleiria.estg.dei.ei.dae.academics.entities.Teacher;
 
 import javax.ejb.EJB;
 import javax.ws.rs.*;
@@ -51,7 +51,18 @@ public class SubjectService {
                 student.getName(),
                 student.getEmail(),
                 student.getCourse().getCode(),
-                student.getCourse().getName()
+                student.getCourse().getName(),
+                null
+        );
+    }
+
+    private TeacherDTO toDTO(Teacher teacher) {
+        return new TeacherDTO(
+                teacher.getUsername(),
+                teacher.getPassword(),
+                teacher.getName(),
+                teacher.getEmail(),
+                teacher.getOffice()
         );
     }
 
@@ -76,15 +87,15 @@ public class SubjectService {
     @GET
     @Path("/{subjectCode}/students")
     public Response getSubjectStudents(@PathParam("subjectCode") long subjectCode) {
-        Subject subject = subjectBean.findSubject(subjectCode);
-        if (subject != null) {
-            List<StudentDTO> dtos =  studentsToDTOs(subject.getStudents());
-            return Response.ok().entity(dtos).build();
-        }
+        List<StudentDTO> dtos = studentsToDTOs(subjectBean.getSubjectStudents(subjectCode));
+        return Response.ok().entity(dtos).build();
+    }
 
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity("SUBJECT_NOT_FOUND")
-                .build();
+    @GET
+    @Path("/{subjectCode}/teachers")
+    public Response getSubjectTeachers(@PathParam("subjectCode") long subjectCode) {
+        List<TeacherDTO> dtos = teachersToDTOs(subjectBean.getSubjectTeachers(subjectCode));
+        return Response.ok().entity(dtos).build();
     }
 
     // converts an entire list of entities into a list of DTOs
@@ -94,5 +105,9 @@ public class SubjectService {
 
     private List<StudentDTO> studentsToDTOs(List<Student> students) {
         return students.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    private List<TeacherDTO> teachersToDTOs(List<Teacher> teachers) {
+        return teachers.stream().map(this::toDTO).collect(Collectors.toList());
     }
 }

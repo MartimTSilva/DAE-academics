@@ -1,9 +1,11 @@
 package pt.ipleiria.estg.dei.ei.dae.academics.ejbs;
 
+import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.academics.dto.StudentDTO;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Course;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Student;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Subject;
+import pt.ipleiria.estg.dei.ei.dae.academics.entities.Teacher;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -20,7 +22,7 @@ public class SubjectBean {
     @EJB
     private CourseBean courseBean;
 
-    public void create(long code, String name, long courseYear, long scholarYear, long courseCode) {
+    public void create(long code, String name, String courseYear, String scholarYear, long courseCode) {
         Course course = courseBean.findCourse(courseCode);
         if (course == null)
             return;
@@ -36,5 +38,17 @@ public class SubjectBean {
 
     public Subject findSubject(long code) {
         return em.find(Subject.class, code);
+    }
+
+    public List<Student> getSubjectStudents(long code) {
+        Subject subject = findSubject(code);
+        Hibernate.initialize(subject.getStudents());
+        return subject.getStudents();
+    }
+
+    public List<Teacher> getSubjectTeachers(long code) {
+        Subject subject = findSubject(code);
+        Hibernate.initialize(subject.getTeachers());
+        return subject.getTeachers();
     }
 }

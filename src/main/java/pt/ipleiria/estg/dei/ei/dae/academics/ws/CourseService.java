@@ -3,7 +3,9 @@ package pt.ipleiria.estg.dei.ei.dae.academics.ws;
 import pt.ipleiria.estg.dei.ei.dae.academics.dto.CourseDTO;
 import pt.ipleiria.estg.dei.ei.dae.academics.ejbs.CourseBean;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Course;
+import pt.ipleiria.estg.dei.ei.dae.academics.security.Authenticated;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -32,6 +34,8 @@ public class CourseService {
 
     @POST
     @Path("/")
+    @Authenticated
+    @RolesAllowed({"Administrator"})
     public Response createNewCourse(CourseDTO courseDTO) {
         courseBean.create(
                 courseDTO.getCode(),

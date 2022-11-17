@@ -7,13 +7,13 @@ public class SubjectDTO implements Serializable {
     private String name;
     private long courseCode;
     private String courseName;
-    private long courseYear;
-    private long scholarYear;
+    private String courseYear;
+    private String scholarYear;
 
     public SubjectDTO() {
     }
 
-    public SubjectDTO(long code, String name, long courseCode, String courseName, long courseYear, long scholarYear) {
+    public SubjectDTO(long code, String name, long courseCode, String courseName, String courseYear, String scholarYear) {
         this.code = code;
         this.name = name;
         this.courseCode = courseCode;
@@ -54,19 +54,19 @@ public class SubjectDTO implements Serializable {
         this.courseName = courseName;
     }
 
-    public long getCourseYear() {
+    public String getCourseYear() {
         return courseYear;
     }
 
-    public void setCourseYear(long courseYear) {
+    public void setCourseYear(String courseYear) {
         this.courseYear = courseYear;
     }
 
-    public long getScholarYear() {
+    public String getScholarYear() {
         return scholarYear;
     }
 
-    public void setScholarYear(long scholarYear) {
+    public void setScholarYear(String scholarYear) {
         this.scholarYear = scholarYear;
     }
 }

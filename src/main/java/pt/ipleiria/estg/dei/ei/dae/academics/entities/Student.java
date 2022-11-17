@@ -21,7 +21,7 @@ public class Student extends User implements Serializable {
     @NotNull
     private Course course;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "students")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "students")
     private List<Subject> subjects;
 
     public Student() {
@@ -44,7 +44,7 @@ public class Student extends User implements Serializable {
     }
 
     public List<Subject> getSubjects() {
-        return new ArrayList<Subject>(subjects);
+        return new ArrayList<>(subjects);
     }
 
     public void addSubject(Subject subject) {

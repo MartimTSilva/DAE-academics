@@ -18,7 +18,7 @@ import java.util.List;
 })
 
 @Entity
-public class Subject implements Serializable {
+public class Subject extends Versionable implements Serializable {
     @Id
     private long code;
 
@@ -30,9 +30,10 @@ public class Subject implements Serializable {
     private Course course;
 
     @JoinColumn(name = "course_year")
-    private long courseYear;
+    private String courseYear;
+
     @JoinColumn(name = "scholar_year")
-    private long scholarYear;
+    private String scholarYear;
 
     @ManyToMany
     @JoinTable(name = "subjects_students",
@@ -51,7 +52,7 @@ public class Subject implements Serializable {
         this.teachers = new ArrayList<Teacher>();
     }
 
-    public Subject(long code, String name, Course course, long courseYear, long scholarYear) {
+    public Subject(long code, String name, Course course, String courseYear, String scholarYear) {
         this.code = code;
         this.name = name;
         this.course = course;
@@ -85,19 +86,19 @@ public class Subject implements Serializable {
         this.course = course;
     }
 
-    public long getCourseYear() {
+    public String getCourseYear() {
         return courseYear;
     }
 
-    public void setCourseYear(long courseYear) {
+    public void setCourseYear(String courseYear) {
         this.courseYear = courseYear;
     }
 
-    public long getScholarYear() {
+    public String getScholarYear() {
         return scholarYear;
     }
 
-    public void setScholarYear(long scholarYear) {
+    public void setScholarYear(String scholarYear) {
         this.scholarYear = scholarYear;
     }
 

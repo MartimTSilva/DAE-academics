@@ -1,31 +1,87 @@
 package pt.ipleiria.estg.dei.ei.dae.academics.ejbs;
 
+import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Course;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Student;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Subject;
+import pt.ipleiria.estg.dei.ei.dae.academics.exceptions.MyEntityExistsException;
+import pt.ipleiria.estg.dei.ei.dae.academics.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.academics.security.Hasher;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Objects;
+
 import static pt.ipleiria.estg.dei.ei.dae.academics.Codes.*;
 
 @Stateless
 public class StudentBean {
     @PersistenceContext
     private EntityManager em;
+
     @EJB
     private CourseBean courseBean;
 
-    public void create(String username, String password, String name, String email, long courseCode) {
+    @Inject
+    private Hasher hasher;
+
+    public boolean exists(String username) {
+        Query query = em.createQuery(
+                "SELECT COUNT(s.username) FROM Student s WHERE s.username = :username",
+                Long.class
+        );
+        query.setParameter("username", username);
+        return (Long) query.getSingleResult() > 0L;
+    }
+
+    public void create(String username, String password, String name, String email, long courseCode)
+            throws MyEntityNotFoundException, MyEntityExistsException, MyEntityExistsException.MyConstraintViolationException {
+        if (exists(username)) {
+            throw new MyEntityExistsException("Student with username '" + username + "' already exists");
+        }
+
         Course course = courseBean.findCourse(courseCode);
         if (course == null)
-            return;
+            throw new MyEntityNotFoundException("Course with code '" + courseCode + "' not found");
 
-        Student student = new Student(username, password, name, email, course);
-        em.persist(student); //saves in database
-        course.addStudent(student);
+        try {
+            Student student = new Student(username, hasher.hash(password), name, email, course);
+            em.persist(student); //saves in database
+            course.addStudent(student);
+        } catch (ConstraintViolationException e) {
+            throw new MyEntityExistsException.MyConstraintViolationException(e);
+        }
+
+    }
+
+    public void update(String username, String password, String name, String email, long courseCode) {
+        Student student = em.find(Student.class, username);
+        if (student == null) {
+            System.err.println("ERROR_STUDENT_NOT_FOUND: " + username);
+            return;
+        }
+        em.lock(student, LockModeType.OPTIMISTIC);
+        student.setPassword(password);
+        student.setName(name);
+        student.setEmail(email);
+
+        // a "lazy way" that avoids querying the course every time we do an update to the student
+        // plus: why we don't check if the other attributes changed too?
+        if (!Objects.equals(student.getCourse().getCode(), courseCode)) {
+            Course course = em.find(Course.class, courseCode);
+            if (course == null) {
+                System.err.println("ERROR_COURSE_NOT_FOUND: " + courseCode);
+                return;
+            }
+            student.setCourse(course);
+        }
     }
 
     public List<Student> getAllStudents() {
@@ -34,7 +90,9 @@ public class StudentBean {
     }
 
     public Student findStudent(String username) {
-        return em.find(Student.class, username);
+        Student student = em.find(Student.class, username);
+        Hibernate.initialize(student.getSubjects());
+        return student;
     }
 
     public int enrollStudentInSubject(String username, long subjectCode) {
@@ -93,5 +151,12 @@ public class StudentBean {
 
         subject.removeStudent(student);
         return OK;
+    }
+
+    public List<Subject> getStudentSubjects(String username) {
+        Student student = findStudent(username);
+
+        Hibernate.initialize(student.getSubjects());
+        return student.getSubjects();
     }
 }

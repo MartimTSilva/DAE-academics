@@ -1,6 +1,12 @@
 ##### Students
 GET http://localhost:8080/academics/api/students
 Accept: application/json
+
+### GET ALL STUDENTS
+GET http://localhost:8080/academics/api/students
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0aW10c2lsdmEiLCJpYXQiOjE2Njg3MDE3OTQsImV4cCI6MTY2ODcwNTM5NH0.xEJLxA4c7H_VLgB-4pl3-3pEb6aSBJbe6otrivK3dmU
+
 ###
 POST http://localhost:8080/academics/api/students
 Content-Type: application/json
@@ -11,6 +17,7 @@ Content-Type: application/json
  "password": "jd",
  "courseCode": 1
 }
+
 ###
 GET http://localhost:8080/academics/api/students/martimtsilva/subjects
 Accept: application/json
@@ -18,11 +25,10 @@ Accept: application/json
 ###
 POST http://localhost:8080/academics/api/subjects/
 Content-Type: application/json
-
 {
   "code": 555,
   "courseyear": 2030,
-  "name": "Teste",
+  "name": "Joao Doe",
   "scholaryear": 2029,
   "courseCode": 1
 }
