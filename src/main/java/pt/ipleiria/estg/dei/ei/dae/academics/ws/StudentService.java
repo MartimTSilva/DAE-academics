@@ -36,9 +36,6 @@ public class StudentService {
     @EJB
     private EmailBean emailBean;
 
-    @Context
-    private SecurityContext securityContext;
-
     @GET
     public List<StudentDTO> getAllStudentsWS() {
         return toDTOsNoSubjects(studentBean.getAllStudents());
@@ -99,11 +96,12 @@ public class StudentService {
     }
 
     @PUT
+    @Authenticated
+    @RolesAllowed({"Student"})
     @Path("/")
     public Response editStudentDetails(StudentDTO studentDTO) {
         studentBean.update(
                 studentDTO.getUsername(),
-                studentDTO.getPassword(),
                 studentDTO.getName(),
                 studentDTO.getEmail(),
                 studentDTO.getCourseCode()
@@ -129,6 +127,8 @@ public class StudentService {
     }
 
     @GET
+    @Authenticated
+    @RolesAllowed({"Student"})
     @Path("{username}/subjects")
     public Response getStudentSubjects(@PathParam("username") String username) {
         List<SubjectDTO> dtos = subjectsToDTOs(studentBean.getStudentSubjects(username));

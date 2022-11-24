@@ -3,14 +3,14 @@ package pt.ipleiria.estg.dei.ei.dae.academics.dto;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
-public class Auth implements Serializable {
+public class AuthDTO implements Serializable {
     @NotBlank
     private String username;
 
     @NotBlank
     private String password;
 
-    public Auth() {
+    public AuthDTO() {
     }
 
     public String getUsername() {

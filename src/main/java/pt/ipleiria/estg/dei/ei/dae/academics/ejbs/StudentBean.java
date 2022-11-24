@@ -61,14 +61,13 @@ public class StudentBean {
 
     }
 
-    public void update(String username, String password, String name, String email, long courseCode) {
+    public void update(String username, String name, String email, long courseCode) {
         Student student = em.find(Student.class, username);
         if (student == null) {
             System.err.println("ERROR_STUDENT_NOT_FOUND: " + username);
             return;
         }
         em.lock(student, LockModeType.OPTIMISTIC);
-        student.setPassword(password);
         student.setName(name);
         student.setEmail(email);
 

@@ -24,6 +24,9 @@ public class Student extends User implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "students")
     private List<Subject> subjects;
 
+    @OneToMany(mappedBy = "student")
+    private List<Document> documents;
+
     public Student() {
         super(null,null,null,null);
         this.subjects = new ArrayList<Subject>();
@@ -45,6 +48,18 @@ public class Student extends User implements Serializable {
 
     public List<Subject> getSubjects() {
         return new ArrayList<>(subjects);
+    }
+
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public List<Document> getDocuments() {
+        return new ArrayList<>(documents);
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
     }
 
     public void addSubject(Subject subject) {
